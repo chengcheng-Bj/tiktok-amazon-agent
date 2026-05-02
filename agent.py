@@ -10,8 +10,10 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 def ask_ai():
-    # 使用 v1beta 接口以确保对 3.1 模型的最佳支持
+    def ask_ai():
+    # 2026年5月最新可用 ID：gemini-3.1-flash-lite-preview
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key={GEMINI_API_KEY}"
+    
     
     # 加入当前时间，强制模型生成不同的创意
     current_time = time.strftime("%Y-%m-%d %H:%M:%S")
