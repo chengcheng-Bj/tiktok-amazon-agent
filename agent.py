@@ -10,7 +10,7 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 
 def ask_ai():
-    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-3.1-flash:generateContent?key={GEMINI_API_KEY}"
     payload = {
         "contents": [
             {
