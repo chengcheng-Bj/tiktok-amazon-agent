@@ -10,7 +10,6 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 
 def ask_ai():
-    def ask_ai():
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={GEMINI_API_KEY}"
 
     payload = {
@@ -28,18 +27,14 @@ def ask_ai():
             r = requests.post(url, json=payload, timeout=20)
             data = r.json()
 
-            # 🔍 debug（关键）
             print("RAW RESPONSE:", data)
 
-            # ❗错误处理1：API error
             if "error" in data:
                 return f"Gemini API ERROR: {data['error']}"
 
-            # ❗错误处理2：安全拦截
             if "candidates" not in data:
                 return f"No candidates returned: {data}"
 
-            # ❗正常解析
             return data["candidates"][0]["content"]["parts"][0]["text"]
 
         except Exception as e:
