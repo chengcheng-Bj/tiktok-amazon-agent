@@ -10,7 +10,7 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 
 def ask_ai():
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
     payload = {
         "contents": [
             {
@@ -23,7 +23,12 @@ def ask_ai():
 
     for i in range(3):
         try:
-            r = requests.post(url, json=payload, timeout=20)
+            r = requests.post(
+    url,
+    headers={"Content-Type": "application/json"},
+    json=payload,
+    timeout=20
+)
             data = r.json()
 
             print("RAW RESPONSE:", data)
