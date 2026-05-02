@@ -1,37 +1,52 @@
 import os
 import requests
-from openai import OpenAI
+import time
 
 print("Agent started")
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-client = OpenAI(api_key=OPENAI_API_KEY)
 
 def ask_ai():
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a cross-border e-commerce assistant."},
-                {"role": "user", "content": "Give 1 trending Amazon product idea for TikTok."}
-            ]
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        return f"AI ERROR: {str(e)}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": "Give 1 trending Amazon product idea for TikTok selling"}
+                ]
+            }
+        ]
+    }
+
+    for i in range(3):
+        try:
+            r = requests.post(url, json=payload, timeout=20)
+            data = r.json()
+
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+
+        except Exception as e:
+            print(f"Attempt {i+1} failed:", repr(e))
+            time.sleep(3)
+
+    return "AI ERROR: Gemini failed"
+
 
 def send_telegram(text):
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+
     try:
-        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         requests.post(url, json={
             "chat_id": TELEGRAM_CHAT_ID,
             "text": text
-        })
+        }, timeout=10)
     except Exception as e:
         print("Telegram error:", e)
+
 
 if __name__ == "__main__":
     result = ask_ai()
