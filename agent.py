@@ -27,14 +27,24 @@ def ask_ai():
             r = requests.post(url, json=payload, timeout=20)
             data = r.json()
 
+            # 🔍 debug（关键）
+            print("RAW RESPONSE:", data)
+
+            # ❗错误处理1：API error
+            if "error" in data:
+                return f"Gemini API ERROR: {data['error']}"
+
+            # ❗错误处理2：安全拦截
+            if "candidates" not in data:
+                return f"No candidates returned: {data}"
+
+            # ❗正常解析
             return data["candidates"][0]["content"]["parts"][0]["text"]
 
         except Exception as e:
             print(f"Attempt {i+1} failed:", repr(e))
-            time.sleep(3)
 
     return "AI ERROR: Gemini failed"
-
 
 def send_telegram(text):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
